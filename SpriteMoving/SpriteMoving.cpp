@@ -12,7 +12,7 @@ HMENU hPopupMenuFile = CreatePopupMenu();
 HMENU hPopupMenuAnimation = CreatePopupMenu();
 HBITMAP hBitmap;
 BITMAP bm;
-HDC mBit;
+HDC hdc, mBit;
 
 ATOM RegMyWindowClass(HINSTANCE hInstance, LPCTSTR lpzClassName)
 {
@@ -85,8 +85,7 @@ void checkCollision()
 
 LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 {
-	HDC hdc = GetDC(hWnd);
-	HDC memDC = CreateCompatibleDC(hdc);
+	hdc = GetDC(hWnd);
 	int xCenter = GET_X_LPARAM(lParam);
 	int yCenter = GET_Y_LPARAM(lParam);
 	int delta = GET_WHEEL_DELTA_WPARAM(wParam);
@@ -99,7 +98,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 		width = sprite->getWidth();
 		height = sprite->getHeight();
 	}
-
+	
 	switch (message)
 	{
 	case WM_LBUTTONUP:
@@ -275,6 +274,8 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 			EnableMenuItem(hPopupMenuAnimation, 4, MF_DISABLED);
 			break;
 		}
+
+		ReleaseDC(hWnd, hdc);
 		break;
 	case WM_TIMER:
 		ClearWorkspace(hWnd, hdc);
@@ -283,16 +284,19 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 		checkCollision();
 		CreateBrush(hdc, r, g, b);
 		sprite->draw(hdc);
+		ReleaseDC(hWnd, hdc);
 		break;
 	case WM_SIZE:
 		areaWidth = LOWORD(lParam);
 		areaHeight = HIWORD(lParam);
+		ReleaseDC(hWnd, hdc);
 		break;
 	case WM_DESTROY:
 		ReleaseDC(hWnd, hdc);
 		PostQuitMessage(0);
 		break;
 	default:
+		ReleaseDC(hWnd, hdc);
 		return DefWindowProc(hWnd, message, wParam, lParam);
 	}
 
@@ -320,7 +324,7 @@ int APIENTRY WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLi
 
 	hBitmap = (HBITMAP)LoadImage(NULL, TEXT("sprite_image.bmp"), IMAGE_BITMAP, 0, 0, LR_LOADFROMFILE | LR_CREATEDIBSECTION);
 	GetObject(hBitmap, sizeof(bm), &bm);
-	HDC hdc = GetDC(hWnd);      
+	hdc = GetDC(hWnd);      
 	mBit = CreateCompatibleDC(hdc);      
 	SelectObject(mBit, hBitmap);   
 	ReleaseDC(hWnd, hdc);
