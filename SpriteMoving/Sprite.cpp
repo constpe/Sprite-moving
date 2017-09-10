@@ -81,3 +81,20 @@ void EllipseSprite::draw(HDC hdc)
 {
 	Ellipse(hdc, this->getX(), this->getY(), this->getX() + this->getWidth(), this->getY() + this->getHeight());
 }
+
+ImageSprite::ImageSprite(int x, int y, int width, int height) : Sprite(x, y, width, height){ }
+
+void ImageSprite::draw(HDC hdc)
+{
+	StretchBlt(hdc, this->getX(), this->getY(), this->getWidth(), this->getHeight(), mBit, 0, 0, this->getWidth() * 2, this->getHeight() * 2, SRCCOPY);
+}
+
+HDC ImageSprite::getMBit()
+{
+	return mBit;
+}
+
+void Sprite::setMBit(HDC mBit)
+{
+	this->mBit = mBit;
+}

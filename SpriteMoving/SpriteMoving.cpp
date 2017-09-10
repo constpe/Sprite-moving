@@ -7,6 +7,12 @@ bool isMove = false;
 int areaWidth;
 int areaHeight;
 int r, g, b;
+HMENU hMenu = CreateMenu();
+HMENU hPopupMenuFile = CreatePopupMenu();
+HMENU hPopupMenuAnimation = CreatePopupMenu();
+HBITMAP hBitmap;
+BITMAP bm;
+HDC mBit;
 
 ATOM RegMyWindowClass(HINSTANCE hInstance, LPCTSTR lpzClassName)
 {
@@ -37,10 +43,6 @@ void CreateBrush(HDC hdc, int r, int g, int b)
 
 void FormMenu(HWND hWnd, HINSTANCE hInstance)
 {
-	HMENU hMenu = CreateMenu();
-	HMENU hPopupMenuFile = CreatePopupMenu();
-	HMENU hPopupMenuAnimation = CreatePopupMenu();
-
 	AppendMenu(hPopupMenuFile, MFT_RADIOCHECK, 0, TEXT("Rectangle"));
 	AppendMenu(hPopupMenuFile, MFT_RADIOCHECK, 1, TEXT("Ellipse"));
 	AppendMenu(hPopupMenuFile, MFT_RADIOCHECK, 2, TEXT("Image"));
@@ -50,6 +52,9 @@ void FormMenu(HWND hWnd, HINSTANCE hInstance)
 
 	AppendMenu(hMenu, MF_STRING | MF_POPUP, (UINT)hPopupMenuFile, TEXT("Sprite view"));
 	AppendMenu(hMenu, MF_STRING | MF_POPUP, (UINT)hPopupMenuAnimation, TEXT("Animation"));
+
+	EnableMenuItem(hPopupMenuAnimation, 4, MF_DISABLED);
+
 	SetMenu(hWnd, hMenu);
 	SetMenu(hWnd, hPopupMenuFile);
 }
@@ -234,20 +239,40 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 			ClearWorkspace(hWnd, hdc);
 			r = 255, g = 100, b = 0;
 			CreateBrush(hdc, r, g, b);
-			sprite = new RectSprite(x, y, width, height);
+			sprite = new RectSprite(x, y, 200, 100);
 			sprite->draw(hdc);
 			break;
 		case 1:
 			ClearWorkspace(hWnd, hdc);
 			r = 90; g = 0; b = 157;
 			CreateBrush(hdc, r, g, b);
-			sprite = new EllipseSprite(x, y, width, height);
+			sprite = new EllipseSprite(x, y, 200, 100);
+			sprite->draw(hdc);
+			break;
+		case 2:
+			ClearWorkspace(hWnd, hdc);
+			sprite = new ImageSprite(x, y, bm.bmWidth / 2, bm.bmHeight / 2);
+			checkCollision();
+			sprite->setMBit(mBit);
 			sprite->draw(hdc);
 			break;
 		case 3:
 			sprite->setXSpeed(20);
 			sprite->setYSpeed(15);
-			SetTimer(hWnd, 1, 100, NULL);
+			EnableMenuItem(hPopupMenuFile, 0, MF_DISABLED);
+			EnableMenuItem(hPopupMenuFile, 1, MF_DISABLED);
+			EnableMenuItem(hPopupMenuFile, 2, MF_DISABLED);
+			EnableMenuItem(hPopupMenuAnimation, 3, MF_DISABLED);
+			EnableMenuItem(hPopupMenuAnimation, 4, MF_ENABLED);
+			SetTimer(hWnd, 1, 200, NULL);
+			break;
+		case 4:
+			KillTimer(hWnd, 1);
+			EnableMenuItem(hPopupMenuFile, 0, MF_ENABLED);
+			EnableMenuItem(hPopupMenuFile, 1, MF_ENABLED);
+			EnableMenuItem(hPopupMenuFile, 2, MF_ENABLED);
+			EnableMenuItem(hPopupMenuAnimation, 3, MF_ENABLED);
+			EnableMenuItem(hPopupMenuAnimation, 4, MF_DISABLED);
 			break;
 		}
 		break;
@@ -293,11 +318,18 @@ int APIENTRY WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLi
 
 	FormMenu(hWnd, hInstance);
 
+	hBitmap = (HBITMAP)LoadImage(NULL, TEXT("sprite_image.bmp"), IMAGE_BITMAP, 0, 0, LR_LOADFROMFILE | LR_CREATEDIBSECTION);
+	GetObject(hBitmap, sizeof(bm), &bm);
+	HDC hdc = GetDC(hWnd);      
+	mBit = CreateCompatibleDC(hdc);      
+	SelectObject(mBit, hBitmap);   
+	ReleaseDC(hWnd, hdc);
+
 	PAINTSTRUCT ps;
-	HDC hdc = BeginPaint(hWnd, &ps);
+	/*HDC*/ hdc = BeginPaint(hWnd, &ps);
 	r = 255, g = 100, b = 0;
 	CreateBrush(hdc, r, g, b);
-	sprite = new RectSprite(450, 250, 200, 100);
+	sprite = new RectSprite(400, 250, 200, 100);
 	sprite->draw(hdc);
 
 	MSG msg;

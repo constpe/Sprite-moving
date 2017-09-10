@@ -12,6 +12,8 @@ private:
 	int height;
 	int xSpeed;
 	int ySpeed;
+protected:
+	HDC mBit;
 public:
 	Sprite(int x, int y, int width, int height);
 	int getX();
@@ -26,6 +28,7 @@ public:
 	void setYSpeed(int ySpeed);
 	int getXSpeed();
 	int getYSpeed();
+	void setMBit(HDC mBit);
 	virtual void draw(HDC hdc) = 0;
 };
 
@@ -47,10 +50,8 @@ class ImageSprite : public Sprite
 {
 public:
 	ImageSprite(int x, int y, int width, int height);
-	void setImage(char* file);
-	char* getImage();
-private:
-	char* image;
+	HDC getMBit();
+	virtual void draw(HDC hdc);
 };
 
 #endif
