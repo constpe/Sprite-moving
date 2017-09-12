@@ -70,7 +70,7 @@ int Sprite::getYSpeed()
 
 void RectSprite::draw(HDC hdc)
 {
-	Rectangle(hdc, this->getX(), this->getY(), this->getX() + this->getWidth(), this->getY() + this->getHeight());
+	Rectangle(hdc, x, y, x + width, y + height);
 }
 
 RectSprite::RectSprite(int x, int y, int width, int height) : Sprite(x, y, width, height){	}
@@ -79,14 +79,14 @@ EllipseSprite::EllipseSprite(int x, int y, int width, int height) : Sprite(x, y,
 
 void EllipseSprite::draw(HDC hdc)
 {
-	Ellipse(hdc, this->getX(), this->getY(), this->getX() + this->getWidth(), this->getY() + this->getHeight());
+	Ellipse(hdc, x, y, x + width, y + height);
 }
 
 ImageSprite::ImageSprite(int x, int y, int width, int height) : Sprite(x, y, width, height){ }
 
 void ImageSprite::draw(HDC hdc)
 {
-	StretchBlt(hdc, this->getX(), this->getY(), this->getWidth(), this->getHeight(), mBit, 0, 0, this->getWidth() * 2, this->getHeight() * 2, SRCCOPY);
+	StretchBlt(hdc, x, y, width, height, mBit, 0, 0, width * 2, height * 2, SRCCOPY);
 }
 
 HDC ImageSprite::getMBit()

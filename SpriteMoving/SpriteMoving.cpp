@@ -4,6 +4,7 @@
 Sprite* sprite; 
 RECT screenRect;
 bool isMove = false;
+bool isAnimation = false;
 int areaWidth;
 int areaHeight;
 int r, g, b;
@@ -14,7 +15,7 @@ HBITMAP hBitmap;
 BITMAP bm;
 HDC hdc, mBit;
 
-ATOM RegMyWindowClass(HINSTANCE hInstance, LPCTSTR lpzClassName)
+ATOM RegWindowClass(HINSTANCE hInstance, LPCTSTR lpzClassName)
 {
 	WNDCLASS wcWindowClass = { 0 };
 
@@ -85,7 +86,7 @@ void checkCollision()
 
 LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 {
-	hdc = GetDC(hWnd);
+	HDC hdc = GetDC(hWnd);
 	int xCenter = GET_X_LPARAM(lParam);
 	int yCenter = GET_Y_LPARAM(lParam);
 	int delta = GET_WHEEL_DELTA_WPARAM(wParam);
@@ -102,27 +103,31 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 	switch (message)
 	{
 	case WM_LBUTTONUP:
-		isMove = !isMove;
+		if (!isAnimation)
+			isMove = !isMove;
 		break;
 	case WM_MOUSEWHEEL:
-		switch (GET_KEYSTATE_WPARAM(wParam))
+		if (!isAnimation)
 		{
-		case MK_SHIFT:
-			ClearWorkspace(hWnd, hdc);
-			CreateBrush(hdc, r, g, b);
+			switch (GET_KEYSTATE_WPARAM(wParam))
+			{
+			case MK_SHIFT:
+				ClearWorkspace(hWnd, hdc);
+				CreateBrush(hdc, r, g, b);
 
-			sprite->setX(x + delta / 4);
-			checkCollision();
-			sprite->draw(hdc);
+				sprite->setX(x + delta / 4);
+				checkCollision();
+				sprite->draw(hdc);
 
-			break;
-		default:
-			ClearWorkspace(hWnd, hdc);
-			CreateBrush(hdc, r, g, b);
+				break;
+			default:
+				ClearWorkspace(hWnd, hdc);
+				CreateBrush(hdc, r, g, b);
 
-			sprite->setY(y - delta / 4);
-			checkCollision();
-			sprite->draw(hdc);
+				sprite->setY(y - delta / 4);
+				checkCollision();
+				sprite->draw(hdc);
+			}
 		}
 
 		ReleaseDC(hWnd, hdc);
@@ -131,79 +136,139 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 		switch (wParam)
 		{
 		case VK_NUMPAD1:
-			ClearWorkspace(hWnd, hdc);
-			CreateBrush(hdc, r, g, b);
+			if (!isAnimation)
+			{
+				ClearWorkspace(hWnd, hdc);
+				CreateBrush(hdc, r, g, b);
 
-			sprite->setX(x - 5);
-			sprite->setY(y + 5);
-			checkCollision();
-			sprite->draw(hdc);
+				sprite->setX(x - 5);
+				sprite->setY(y + 5);
+				checkCollision();
+				sprite->draw(hdc);
+			}
+			else
+			{
+				sprite->setXSpeed(-20);
+				sprite->setYSpeed(15);
+			}
 
 			break;
 		case VK_NUMPAD2:
-			ClearWorkspace(hWnd, hdc);
-			CreateBrush(hdc, r, g, b);
-			
-			sprite->setY(y + 5);
-			checkCollision();
-			sprite->draw(hdc);
+			if (!isAnimation)
+			{
+				ClearWorkspace(hWnd, hdc);
+				CreateBrush(hdc, r, g, b);
+
+				sprite->setY(y + 5);
+				checkCollision();
+				sprite->draw(hdc);
+			}
+			else
+			{
+				sprite->setYSpeed(15);
+			}
 
 			break;
 		case VK_NUMPAD3:
-			ClearWorkspace(hWnd, hdc);
-			CreateBrush(hdc, r, g, b);
+			if (!isAnimation)
+			{
+				ClearWorkspace(hWnd, hdc);
+				CreateBrush(hdc, r, g, b);
 
-			sprite->setX(x + 5);
-			sprite->setY(y + 5);
-			checkCollision();
-			sprite->draw(hdc);
+				sprite->setX(x + 5);
+				sprite->setY(y + 5);
+				checkCollision();
+				sprite->draw(hdc);
+			}
+			else
+			{
+				sprite->setXSpeed(20);
+				sprite->setYSpeed(15);
+			}
 
 			break;
 		case VK_NUMPAD4:
-			ClearWorkspace(hWnd, hdc);
-			CreateBrush(hdc, r, g, b);
+			if (!isAnimation)
+			{
+				ClearWorkspace(hWnd, hdc);
+				CreateBrush(hdc, r, g, b);
 
-			sprite->setX(x - 5);
-			checkCollision();
-			sprite->draw(hdc);
+				sprite->setX(x - 5);
+				checkCollision();
+				sprite->draw(hdc);
+			}
+			else
+			{
+				sprite->setXSpeed(-20);
+			}
 
 			break;
 		case VK_NUMPAD6:
-			ClearWorkspace(hWnd, hdc);
-			CreateBrush(hdc, r, g, b);
+			if (!isAnimation)
+			{
+				ClearWorkspace(hWnd, hdc);
+				CreateBrush(hdc, r, g, b);
 
-			sprite->setX(x + 5);
-			checkCollision();
-			sprite->draw(hdc);
+				sprite->setX(x + 5);
+				checkCollision();
+				sprite->draw(hdc);
+			}
+			else
+			{
+				sprite->setXSpeed(20);
+			}
 
 			break;
 		case VK_NUMPAD7:
-			ClearWorkspace(hWnd, hdc);
-			CreateBrush(hdc, r, g, b);
+			if (!isAnimation)
+			{
+				ClearWorkspace(hWnd, hdc);
+				CreateBrush(hdc, r, g, b);
 
-			sprite->setX(x - 5);
-			sprite->setY(y - 5);
-			checkCollision();
-			sprite->draw(hdc);
+				sprite->setX(x - 5);
+				sprite->setY(y - 5);
+				checkCollision();
+				sprite->draw(hdc);
+			}
+			else
+			{
+				sprite->setXSpeed(-20);
+				sprite->setYSpeed(-15);
+			}
 
 			break;
 		case VK_NUMPAD8:
-			ClearWorkspace(hWnd, hdc);
-			CreateBrush(hdc, r, g, b);
+			if (!isAnimation)
+			{
+				ClearWorkspace(hWnd, hdc);
+				CreateBrush(hdc, r, g, b);
 
-			sprite->setY(y - 5);
-			checkCollision();
-			sprite->draw(hdc);
+				sprite->setY(y - 5);
+				checkCollision();
+				sprite->draw(hdc);
+			}
+			else
+			{
+				sprite->setYSpeed(-15);
+			}
 
 			break;
 		case VK_NUMPAD9:
-			ClearWorkspace(hWnd, hdc);
-			CreateBrush(hdc, r, g, b);
+			if (!isAnimation)
+			{
+				ClearWorkspace(hWnd, hdc);
+				CreateBrush(hdc, r, g, b);
 
-			sprite->setX(x + 5);
-			sprite->setY(y - 5);
-			checkCollision();
-			sprite->draw(hdc);
+				sprite->setX(x + 5);
+				sprite->setY(y - 5);
+				checkCollision();
+				sprite->draw(hdc);
+			}
+			else
+			{
+				sprite->setXSpeed(20);
+				sprite->setYSpeed(-15);
+			}
 
 			break;
 		}
@@ -263,10 +328,13 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 			EnableMenuItem(hPopupMenuFile, 2, MF_DISABLED);
 			EnableMenuItem(hPopupMenuAnimation, 3, MF_DISABLED);
 			EnableMenuItem(hPopupMenuAnimation, 4, MF_ENABLED);
+			isAnimation = true;
+			isMove = false;
 			SetTimer(hWnd, 1, 200, NULL);
 			break;
 		case 4:
 			KillTimer(hWnd, 1);
+			isAnimation = false;
 			EnableMenuItem(hPopupMenuFile, 0, MF_ENABLED);
 			EnableMenuItem(hPopupMenuFile, 1, MF_ENABLED);
 			EnableMenuItem(hPopupMenuFile, 2, MF_ENABLED);
@@ -307,7 +375,7 @@ int APIENTRY WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLi
 {
 	LPCTSTR lpzClass = TEXT("My Window Class");
 
-	if (!RegMyWindowClass(hInstance, lpzClass))
+	if (!RegWindowClass(hInstance, lpzClass))
 		return 1;
 	
 	GetWindowRect(GetDesktopWindow(), &screenRect);
@@ -327,14 +395,12 @@ int APIENTRY WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLi
 	hdc = GetDC(hWnd);      
 	mBit = CreateCompatibleDC(hdc);      
 	SelectObject(mBit, hBitmap);   
-	ReleaseDC(hWnd, hdc);
-
-	PAINTSTRUCT ps;
-	/*HDC*/ hdc = BeginPaint(hWnd, &ps);
+	
 	r = 255, g = 100, b = 0;
 	CreateBrush(hdc, r, g, b);
 	sprite = new RectSprite(400, 250, 200, 100);
 	sprite->draw(hdc);
+	ReleaseDC(hWnd, hdc);
 
 	MSG msg;
 	int iGetOk = 0;

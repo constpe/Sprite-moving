@@ -5,14 +5,13 @@
 
 class Sprite
 {
-private:
+protected:
 	int x;
 	int y;
 	int width;
 	int height;
 	int xSpeed;
 	int ySpeed;
-protected:
 	HDC mBit;
 public:
 	Sprite(int x, int y, int width, int height);
