@@ -112,20 +112,18 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 			switch (GET_KEYSTATE_WPARAM(wParam))
 			{
 			case MK_SHIFT:
-				ClearWorkspace(hWnd, hdc);
 				CreateBrush(hdc, r, g, b);
-
 				sprite->setX(x + delta / 4);
 				checkCollision();
+				ClearWorkspace(hWnd, hdc);
 				sprite->draw(hdc);
 
 				break;
 			default:
-				ClearWorkspace(hWnd, hdc);
 				CreateBrush(hdc, r, g, b);
-
 				sprite->setY(y - delta / 4);
 				checkCollision();
+				ClearWorkspace(hWnd, hdc);
 				sprite->draw(hdc);
 			}
 		}
@@ -138,12 +136,11 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 		case VK_NUMPAD1:
 			if (!isAnimation)
 			{
-				ClearWorkspace(hWnd, hdc);
 				CreateBrush(hdc, r, g, b);
-
 				sprite->setX(x - 5);
 				sprite->setY(y + 5);
 				checkCollision();
+				ClearWorkspace(hWnd, hdc);
 				sprite->draw(hdc);
 			}
 			else
@@ -156,11 +153,10 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 		case VK_NUMPAD2:
 			if (!isAnimation)
 			{
-				ClearWorkspace(hWnd, hdc);
 				CreateBrush(hdc, r, g, b);
-
 				sprite->setY(y + 5);
 				checkCollision();
+				ClearWorkspace(hWnd, hdc);
 				sprite->draw(hdc);
 			}
 			else
@@ -172,12 +168,11 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 		case VK_NUMPAD3:
 			if (!isAnimation)
 			{
-				ClearWorkspace(hWnd, hdc);
 				CreateBrush(hdc, r, g, b);
-
 				sprite->setX(x + 5);
 				sprite->setY(y + 5);
 				checkCollision();
+				ClearWorkspace(hWnd, hdc);
 				sprite->draw(hdc);
 			}
 			else
@@ -190,11 +185,10 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 		case VK_NUMPAD4:
 			if (!isAnimation)
 			{
-				ClearWorkspace(hWnd, hdc);
 				CreateBrush(hdc, r, g, b);
-
 				sprite->setX(x - 5);
 				checkCollision();
+				ClearWorkspace(hWnd, hdc);
 				sprite->draw(hdc);
 			}
 			else
@@ -206,11 +200,10 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 		case VK_NUMPAD6:
 			if (!isAnimation)
 			{
-				ClearWorkspace(hWnd, hdc);
 				CreateBrush(hdc, r, g, b);
-
 				sprite->setX(x + 5);
 				checkCollision();
+				ClearWorkspace(hWnd, hdc);
 				sprite->draw(hdc);
 			}
 			else
@@ -222,12 +215,11 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 		case VK_NUMPAD7:
 			if (!isAnimation)
 			{
-				ClearWorkspace(hWnd, hdc);
 				CreateBrush(hdc, r, g, b);
-
 				sprite->setX(x - 5);
 				sprite->setY(y - 5);
 				checkCollision();
+				ClearWorkspace(hWnd, hdc);
 				sprite->draw(hdc);
 			}
 			else
@@ -240,11 +232,10 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 		case VK_NUMPAD8:
 			if (!isAnimation)
 			{
-				ClearWorkspace(hWnd, hdc);
 				CreateBrush(hdc, r, g, b);
-
 				sprite->setY(y - 5);
 				checkCollision();
+				ClearWorkspace(hWnd, hdc);
 				sprite->draw(hdc);
 			}
 			else
@@ -256,12 +247,11 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 		case VK_NUMPAD9:
 			if (!isAnimation)
 			{
-				ClearWorkspace(hWnd, hdc);
 				CreateBrush(hdc, r, g, b);
-
 				sprite->setX(x + 5);
 				sprite->setY(y - 5);
 				checkCollision();
+				ClearWorkspace(hWnd, hdc);
 				sprite->draw(hdc);
 			}
 			else
@@ -278,12 +268,11 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 	case WM_MOUSEMOVE:
 		if (isMove)
 		{
-			ClearWorkspace(hWnd, hdc);
 			CreateBrush(hdc, r, g, b);
-
 			sprite->setX(xCenter - width / 2);
 			sprite->setY(yCenter - height / 2);
 			checkCollision();
+			ClearWorkspace(hWnd, hdc);
 			sprite->draw(hdc);
 		}
 
@@ -346,11 +335,11 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 		ReleaseDC(hWnd, hdc);
 		break;
 	case WM_TIMER:
-		ClearWorkspace(hWnd, hdc);
 		sprite->setX(sprite->getX() + sprite->getXSpeed());
 		sprite->setY(sprite->getY() + sprite->getYSpeed());
 		checkCollision();
 		CreateBrush(hdc, r, g, b);
+		ClearWorkspace(hWnd, hdc);
 		sprite->draw(hdc);
 		ReleaseDC(hWnd, hdc);
 		break;
@@ -413,6 +402,7 @@ int APIENTRY WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLi
 		DispatchMessage(&msg);
 	}
 
+	DeleteDC(mBit);
 	return msg.wParam;
 }
 
